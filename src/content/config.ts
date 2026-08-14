@@ -1,4 +1,4 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection, reference, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 export const TAGS = ['homelab', 'ai-agents', 'pc-build', '3d-printing', 'electronics'] as const;
@@ -21,7 +21,7 @@ const projects = defineCollection({
     status: z.enum(['planned', 'in-progress', 'done']),
     tags: z.array(z.enum(TAGS)).min(1),
     summary: z.string(),
-    relatedPosts: z.array(z.string()).default([]),
+    relatedPosts: z.array(reference('posts')).default([]),
   }),
 });
 
