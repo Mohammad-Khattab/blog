@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import { TAGS } from '../../content/config';
+
+export async function getStaticPaths() {
+  return TAGS.map((tag) => ({ params: { tag } }));
+}
+
+const { tag } = Astro.params;
+const posts = (
+  await getCollection('posts', ({ data }) => !data.draft && data.tags.includes(tag as (typeof TAGS)[number]))
+).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+<BaseLayout title={`Tag: ${tag}`} description={`Posts tagged ${tag}.`}>
+  <h1 class="text-3xl font-bold text-zinc-100">Tag: {tag}</h1>
+  <div class="mt-6">
+    {posts.map((post) => <PostCard post={post} />)}
+  </div>
+</BaseLayout>
