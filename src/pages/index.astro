@@ -1,14 +1,31 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
-import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 
-const posts = await getCollection('posts');
-const projects = await getCollection('projects');
+const recentPosts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
 ---
-<BaseLayout title="Home">
-  <h1 class="text-3xl font-bold text-zinc-100">Components OK</h1>
-  <PostCard post={posts[0]} />
-  <ProjectCard project={projects[0]} />
+<BaseLayout title="Home" description="Personal blog and project log for Mohammad Khattab.">
+  <section>
+    <h1 class="text-3xl font-bold text-zinc-100">Hey, I'm Mohammad.</h1>
+    <p class="mt-4 text-zinc-400">
+      I'm a Computer Engineering student in Amman, Jordan, working toward
+      becoming an AI systems engineer — sitting at the intersection of AI,
+      software, and hardware. This site is a running log of what I'm
+      building along the way: a homelab, a personal AI agent, a custom PC,
+      and eventually 3D printing and electronics.
+    </p>
+    <p class="mt-4">
+      <a href="/projects/" class="text-emerald-400 hover:underline">See what I'm working on &rarr;</a>
+    </p>
+  </section>
+
+  <section class="mt-12">
+    <h2 class="text-xl font-semibold text-zinc-100">Recent posts</h2>
+    <div class="mt-4">
+      {recentPosts.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
 </BaseLayout>
